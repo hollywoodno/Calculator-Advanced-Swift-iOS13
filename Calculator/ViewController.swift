@@ -32,7 +32,7 @@ class ViewController: UIViewController {
       
       // perform the calculation
       calculatorLogic.setNum(displayTextAsNum)
-      
+
       guard let number = calculatorLogic.perform(operation) else {
         fatalError("Cannot perform calculation on operation. Operation returns nil")
       }
