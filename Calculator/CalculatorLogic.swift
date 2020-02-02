@@ -20,10 +20,10 @@ struct CalculatorLogic {
   mutating func perform(_ operation: String) -> Double? {
     if let num = num {
       switch operation {
-      case "×", "-", "÷", "+":
-        intermediateCalculation = (calcType: operation, n1: num)
-        return num
       case "AC":
+        // reset number and intermediate calculation
+        setNum(0)
+        intermediateCalculation = nil
         return 0
       case "%":
         return num / 100
@@ -32,7 +32,7 @@ struct CalculatorLogic {
       case "=":
         return performIntermediateCalculation(by: num)
       default:
-        return nil
+         intermediateCalculation = (calcType: operation, n1: num)
       }
     }
     
@@ -41,27 +41,29 @@ struct CalculatorLogic {
   
   private func performIntermediateCalculation(by n2: Double) -> Double? {
     
-    guard intermediateCalculation != nil else {
-      fatalError("Cannot perform calculation. Itermediate calculation cannot be nil")
+    //    guard intermediateCalculation != nil else {
+    //      fatalError("Cannot perform calculation. Itermediate calculation cannot be nil")
+    //    }
+    
+    if let intermediateCalculation = intermediateCalculation {
+      // safe to force unwrap because these values are not optional in intermediateCalculation
+      // however optional chaining with if statements will work as well
+      let n1 = intermediateCalculation.n1
+      let operation = intermediateCalculation.calcType
+      
+      switch operation {
+      case "+":
+        return n1 + n2
+      case "-":
+        return n1 - n2
+      case "÷":
+        return n1 / n2
+      case "×":
+        return n1 * n2
+      default:
+        fatalError("Operation is invalid.")
+      }
     }
-    
-    // safe to force unwrap because these values are not optional in intermediateCalculation
-    // however optional chaining with if statements will work as well
-    let n1 = intermediateCalculation!.n1
-    let operation = intermediateCalculation!.calcType
-    
-    switch operation {
-    case "+":
-      return n1 + n2
-    case "-":
-      return n1 - n2
-    case "÷":
-      return n1 / n2
-    case "×":
-      return n1 * n2
-    default:
-      fatalError("Operation is invalid.")
-    }
-    
+    return nil
   }
 }
